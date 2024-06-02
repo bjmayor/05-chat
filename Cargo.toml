@@ -1,11 +1,8 @@
-[package]
-name = "chat"
-version = "0.1.0"
-edition = "2021"
+[workspace]
+members = ["chat_server", "notify_server"]
+resolver = "2"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[dependencies]
+[workspace.dependencies]
 anyhow = "1.0.86"
 axum = { version = "0.7.5", features = [
 	"ws",
@@ -13,6 +10,7 @@ axum = { version = "0.7.5", features = [
 	"query",
 	"tracing",
 	"multipart",
+	#"macros",
 ] }
 serde = { version = "1.0.203", features = ["derive"] }
 serde_yaml = "0.9.34"

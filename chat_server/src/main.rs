@@ -1,6 +1,6 @@
 use anyhow::Result;
 
-use chat::{get_router, AppConfig};
+use chat_server::{get_router, AppConfig};
 use tokio::net::TcpListener;
 
 use tracing::{info, level_filters::LevelFilter};
