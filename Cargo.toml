@@ -16,9 +16,10 @@ serde = { version = "1.0.203", features = ["derive"] }
 serde_yaml = "0.9.34"
 
 sqlx = { version = "0.7.4", features = [
-	"runtime-tokio-rustls",
+	"runtime-tokio",
 	"postgres",
 	"chrono",
+	"tls-rustls",
 	"uuid",
 ] }
 thiserror = "1.0.61"

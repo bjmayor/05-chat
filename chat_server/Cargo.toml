@@ -6,12 +6,17 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+thiserror = { workspace = true }
 anyhow = { workspace = true }
 axum = { workspace = true }
+chrono = { version = "0.4.38", features = ["serde"] }
 serde = { workspace = true }
 serde_yaml = { workspace = true }
 sqlx = { workspace = true }
-thiserror = { workspace = true }
 tokio = { workspace = true }
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
+argon2 = { version = "0.5.3", features = ["std"] }
+
+[dev-dependencies]
+sqlx-db-tester = "0.4.0"
