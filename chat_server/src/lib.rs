@@ -1,5 +1,6 @@
 mod config;
 mod error;
+mod middlewares;
 mod models;
 mod utils;
 use core::fmt;
@@ -8,15 +9,18 @@ mod handlers;
 use anyhow::Context;
 pub use error::AppError;
 
+use middlewares::{set_layer, verify_token};
 pub use models::User;
 
 use axum::{
+    middleware::from_fn_with_state,
     routing::{get, patch, post},
     Router,
 };
 pub use config::AppConfig;
 use handlers::*;
 use sqlx::PgPool;
+
 use utils::{DecodingKey, EncodingKey};
 
 #[derive(Debug, Clone)]
@@ -43,8 +47,6 @@ pub async fn get_router(config: AppConfig) -> Result<Router, AppError> {
     let state = AppState::try_new(config).await?;
 
     let api = Router::new()
-        .route("/signin", post(signin_handler))
-        .route("/signup", post(signup_handler))
         .route("/chat", get(list_chat_handler).post(create_chat_handler))
         .route(
             "/chat/:id",
@@ -52,13 +54,17 @@ pub async fn get_router(config: AppConfig) -> Result<Router, AppError> {
                 .delete(delete_chat_handler)
                 .post(send_message_handler),
         )
-        .route("/chat/:id/messages", get(list_message_handler));
+        .route("/chat/:id/messages", get(list_message_handler))
+        .layer(from_fn_with_state(state.clone(), verify_token))
+        // routes doesn't need token verification
+        .route("/signin", post(signin_handler))
+        .route("/signup", post(signup_handler));
 
     let app = Router::new()
         .route("/", get(index_handler))
         .nest("/api", api)
         .with_state(state);
-    Ok(app)
+    Ok(set_layer(app))
 }
 
 // 当我调用 state.config => state.inner.config

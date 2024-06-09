@@ -19,6 +19,14 @@ tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
 argon2 = { version = "0.5.3", features = ["std"] }
 jwt-simple = "0.12.9"
+tower = "0.4.13"
+tower-http = { version = "0.5.2", features = [
+	"compression-full",
+	"cors",
+	"trace",
+] }
+uuid = { version = "1.8.0", features = ["v7", "serde"] }
+axum-extra = { version = "0.9.3", features = ["typed-header"] }
 
 [dev-dependencies]
 sqlx-db-tester = "0.4.0"
