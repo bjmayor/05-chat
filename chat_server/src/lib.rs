@@ -47,6 +47,7 @@ pub async fn get_router(config: AppConfig) -> Result<Router, AppError> {
     let state = AppState::try_new(config).await?;
 
     let api = Router::new()
+        .route("/users", get(list_chat_users_handler))
         .route("/chat", get(list_chat_handler).post(create_chat_handler))
         .route(
             "/chat/:id",
@@ -102,13 +103,8 @@ impl AppState {
         use sqlx_db_tester::TestPg;
         let dk = DecodingKey::load(&config.auth.pk).context("load pk failed")?;
         let ek = EncodingKey::load(&config.auth.sk).context("load sk failed")?;
-        let parts: Vec<&str> = config.server.db_url.split('/').collect();
-        let server_url = parts
-            .iter()
-            .take(parts.len() - 1)
-            .map(|s| s.to_string())
-            .collect::<Vec<_>>()
-            .join("/");
+        let post = config.server.db_url.rfind('/').expect("invalid db url");
+        let server_url = config.server.db_url[..post].to_string();
         let tdb = TestPg::new(
             server_url.to_string(),
             std::path::Path::new("../migrations"),
