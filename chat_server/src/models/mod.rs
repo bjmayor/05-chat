@@ -1,6 +1,7 @@
 mod chat;
 mod user;
 mod workspace;
+pub use chat::CreateChat;
 use serde::{Deserialize, Serialize};
 use sqlx::{
     types::chrono::{DateTime, Utc},
