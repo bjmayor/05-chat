@@ -21,12 +21,8 @@ CREATE TYPE chat_type AS ENUM (
 CREATE TABLE IF NOT EXISTS chats (
 	id BIGSERIAL PRIMARY KEY,
 	-- chat name
-	name VARCHAR(128) NOT NULL UNIQUE,
+	name VARCHAR(64),
 	type chat_type NOT NULL,
-	-- chat description
-	description VARCHAR(64) NOT NULL,
-	-- chat owner
-	owner_id INT NOT NULL,
 	-- user id list
 	members BIGINT [] NOT NULL,
 	-- chat created at
