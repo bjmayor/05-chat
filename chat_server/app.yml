@@ -1,6 +1,7 @@
 server:
   port: 6688
   db_url: postgresql://postgres:password@localhost:5432/chat
+  base_dir: /tmp/chat_server
 auth:
   sk: |
     -----BEGIN PRIVATE KEY-----

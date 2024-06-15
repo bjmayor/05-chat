@@ -24,9 +24,13 @@ tower-http = { version = "0.5.2", features = [
 	"compression-full",
 	"cors",
 	"trace",
+	"fs",
 ] }
 uuid = { version = "1.8.0", features = ["v7", "serde"] }
 axum-extra = { version = "0.9.3", features = ["typed-header"] }
+sha1 = "0.10.6"
+hex = "0.4.3"
+mime_guess = "2.0.4"
 
 [dev-dependencies]
 sqlx-db-tester = "0.4.0"

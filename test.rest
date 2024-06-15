@@ -63,3 +63,27 @@ Authorization: Bearer {{token}}
 
 GET http://localhost:6688/api/users
 Authorization: Bearer {{token}}
+
+### upload files
+
+POST http://localhost:6688/api/upload
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=MyBoundary
+
+--MyBoundary
+Content-Disposition: form-data; filename="1fea4404105bf6bdae205b63c05d92ac.jpg"
+Content-Type: application/octet-stream
+
+< /Users/maynard/Desktop/imgs/1fea4404105bf6bdae205b63c05d92ac.jpg
+--MyBoundary
+Content-Disposition: form-data; filename="hello.txt"
+Content-Type: text/plain
+
+Hello, World!
+--MyBoundary--
+
+
+### get files
+
+GET http://localhost:6688/api/files/1/46c/675/1f19aee7e04182f7b7229a5af961a442ae.jpg
+Authorization: Bearer {{token}}
