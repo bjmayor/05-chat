@@ -1,5 +1,6 @@
 mod chat;
 mod file;
+mod message;
 mod user;
 mod workspace;
 pub use chat::CreateChat;
@@ -58,6 +59,17 @@ pub struct Chat {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ChatFile {
+    pub ws_id: u64,  // workspace id
     pub ext: String, // extract ext from filename or mime type
     pub hash: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, FromRow, PartialEq, Eq)]
+pub(crate) struct Message {
+    pub id: i64,
+    pub chat_id: i64,
+    pub sender_id: i64,
+    pub content: String,
+    pub files: Vec<String>,
+    pub created_at: DateTime<Utc>,
 }

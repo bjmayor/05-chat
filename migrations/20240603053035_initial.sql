@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS messages (
 	sender_id INT NOT NULL REFERENCES users(id),
 	-- message content
 	content TEXT NOT NULL,
-	images text [],
+	files text [],
 	-- message created at
 	created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
