@@ -108,7 +108,8 @@ mod test_utils {
     use sqlx::{Executor, PgPool};
     use sqlx_db_tester::TestPg;
     impl AppState {
-        pub async fn new_for_test(config: AppConfig) -> Result<(TestPg, Self), AppError> {
+        pub async fn new_for_test() -> Result<(TestPg, Self), AppError> {
+            let config = AppConfig::load()?;
             let dk = DecodingKey::load(&config.auth.pk).context("load pk failed")?;
             let ek = EncodingKey::load(&config.auth.sk).context("load sk failed")?;
             let post = config.server.db_url.rfind('/').expect("invalid db url");
@@ -126,7 +127,7 @@ mod test_utils {
         }
     }
 
-    pub async fn get_test_pool(url: Option<String>) -> (TestPg, PgPool) {
+    async fn get_test_pool(url: Option<String>) -> (TestPg, PgPool) {
         let server_url = match url {
             Some(url) => url,
             None => "postgres://postgres:password@localhost:5432".to_string(),
