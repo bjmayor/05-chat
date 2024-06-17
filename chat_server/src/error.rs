@@ -22,7 +22,7 @@ pub enum AppError {
     #[error("create message error: {0}")]
     CreateMessageError(String),
 
-    #[error("chat file error: {0}")]
+    #[error("{0}")]
     ChatFileError(String),
 
     #[error("Not found: {0}")]

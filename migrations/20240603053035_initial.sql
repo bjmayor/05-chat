@@ -32,12 +32,12 @@ CREATE TABLE IF NOT EXISTS chats (
 CREATE TABLE IF NOT EXISTS messages (
 	id BIGSERIAL PRIMARY KEY,
 	-- chat id
-	chat_id INT NOT NULL REFERENCES chats(id),
+	chat_id bigint NOT NULL REFERENCES chats(id),
 	-- user id
-	sender_id INT NOT NULL REFERENCES users(id),
+	sender_id bigint NOT NULL REFERENCES users(id),
 	-- message content
 	content TEXT NOT NULL,
-	files text [],
+	files text [] DEFAULT '{}',
 	-- message created at
 	created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );

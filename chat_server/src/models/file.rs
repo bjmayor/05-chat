@@ -42,7 +42,7 @@ impl FromStr for ChatFile {
         // strip /files, if not exists,return Err
         let s = s
             .strip_prefix("/files/")
-            .ok_or(ChatFileError(format!("invalid file:{}", s)))?;
+            .ok_or(ChatFileError(format!("Invalid chat file path: {}", s)))?;
 
         let parts: Vec<&str> = s.split('/').collect();
         if parts.len() != 4 {
