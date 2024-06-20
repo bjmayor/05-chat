@@ -31,6 +31,7 @@ axum-extra = { version = "0.9.3", features = ["typed-header"] }
 sha1 = "0.10.6"
 hex = "0.4.3"
 mime_guess = "2.0.4"
+chat-core = { workspace = true, path = "../chat_core" }
 
 [dev-dependencies]
 sqlx-db-tester = "0.4.0"

@@ -2,15 +2,14 @@ mod config;
 mod error;
 mod middlewares;
 mod models;
-mod utils;
 use core::fmt;
 use std::{ops::Deref, sync::Arc};
 mod handlers;
 use anyhow::Context;
 pub use error::AppError;
 
-use middlewares::{set_layer, verify_chat, verify_token};
-pub use models::User;
+pub use chat_core::User;
+use middlewares::verify_chat;
 
 use axum::{
     middleware::from_fn_with_state,
@@ -21,8 +20,11 @@ pub use config::AppConfig;
 use handlers::*;
 use sqlx::PgPool;
 
+use chat_core::{
+    middlewares::{set_layer, verify_token, TokenVerify},
+    DecodingKey, EncodingKey,
+};
 use tokio::fs;
-use utils::{DecodingKey, EncodingKey};
 
 #[derive(Debug, Clone)]
 pub(crate) struct AppState {
@@ -62,7 +64,7 @@ pub async fn get_router(config: AppConfig) -> Result<Router, AppError> {
         .route("/users", get(list_chat_users_handler))
         .route("/upload", post(upload_handler))
         .route("/files/:ws_id/*path", get(file_handler))
-        .layer(from_fn_with_state(state.clone(), verify_token))
+        .layer(from_fn_with_state(state.clone(), verify_token::<AppState>))
         // routes doesn't need token verification
         .route("/signin", post(signin_handler))
         .route("/signup", post(signup_handler));
@@ -101,6 +103,14 @@ impl AppState {
                 pool,
             }),
         })
+    }
+}
+
+impl TokenVerify for AppState {
+    type Error = AppError;
+
+    fn verify(&self, token: &str) -> Result<User, Self::Error> {
+        Ok(self.dk.verify(token)?)
     }
 }
 
