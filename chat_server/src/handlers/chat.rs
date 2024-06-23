@@ -4,15 +4,37 @@ use axum::{
     response::IntoResponse,
     Extension, Json,
 };
-use tracing::info;
 
 use crate::{models::CreateChat, AppError, AppState, User};
 
-pub(crate) async fn list_chat_handler(Extension(user): Extension<User>) -> impl IntoResponse {
-    info!("user: {:?}", user);
-    "chat"
+#[utoipa::path(
+    get,
+    path = "/api/chats",
+    responses(
+        (status = 200, description = "List of chats", body = Vec<Chat>),
+    ),
+    security(
+        ("token" = [])
+    )
+)]
+pub(crate) async fn list_chat_handler(
+    Extension(user): Extension<User>,
+    State(state): State<AppState>,
+) -> Result<impl IntoResponse, AppError> {
+    let chat = state.fetch_chats(user.ws_id as _).await?;
+    Ok((StatusCode::OK, Json(chat)))
 }
 
+#[utoipa::path(
+    post,
+    path = "/api/chats",
+    responses(
+        (status = 201, description = "Chat created", body = Chat),
+    ),
+    security(
+        ("token" = [])
+    )
+)]
 pub(crate) async fn create_chat_handler(
     Extension(user): Extension<User>,
     State(state): State<AppState>,
@@ -22,6 +44,20 @@ pub(crate) async fn create_chat_handler(
     Ok((StatusCode::CREATED, Json(chat)))
 }
 
+#[utoipa::path(
+    get,
+    path = "/api/chats/{id}",
+    params(
+        ("id" = u64, Path, description = "Chat id")
+    ),
+    responses(
+        (status = 200, description = "Chat found", body = Chat),
+        (status = 404, description = "Chat not found", body = ErrorOutput),
+    ),
+    security(
+        ("token" = [])
+    )
+)]
 pub(crate) async fn get_chat_handler(
     State(state): State<AppState>,
     Path(id): Path<u64>,
