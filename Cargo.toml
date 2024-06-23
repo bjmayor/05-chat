@@ -1,5 +1,5 @@
 [workspace]
-members = ["chat_core", "chat_server", "notify_server"]
+members = ["chat_core", "chat_server", "chat_test", "notify_server"]
 resolver = "2"
 
 [workspace.dependencies]
@@ -34,6 +34,8 @@ tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
 axum-extra = { version = "0.9.3", features = ["typed-header"] }
 chrono = { version = "0.4.38", features = ["serde"] }
 chat-core = { path = "./chat_core" }
+chat-server = { path = "./chat_server" }
+notify-server = { path = "./notify_server" }
 jwt-simple = "0.12.9"
 tower = "0.4.13"
 tower-http = { version = "0.5.2", features = [

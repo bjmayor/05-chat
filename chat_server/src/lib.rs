@@ -27,12 +27,12 @@ use chat_core::{
 use tokio::fs;
 
 #[derive(Debug, Clone)]
-pub(crate) struct AppState {
+pub struct AppState {
     inner: Arc<AppStateInner>,
 }
 
 #[allow(unused)]
-pub(crate) struct AppStateInner {
+pub struct AppStateInner {
     pub(crate) config: AppConfig,
     pub(crate) dk: DecodingKey,
     pub(crate) ek: EncodingKey,
@@ -46,8 +46,7 @@ impl fmt::Debug for AppStateInner {
             .finish()
     }
 }
-pub async fn get_router(config: AppConfig) -> Result<Router, AppError> {
-    let state = AppState::try_new(config).await?;
+pub async fn get_router(state: AppState) -> Result<Router, AppError> {
     let chat = Router::new()
         .route(
             "/:id",
@@ -114,7 +113,7 @@ impl TokenVerify for AppState {
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "test-utils")]
 mod test_utils {
     use super::*;
     use sqlx::{Executor, PgPool};

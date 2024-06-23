@@ -35,12 +35,15 @@ pub struct AppStateInner {
 
 const INDEX_HTML: &str = include_str!("../index.html");
 
-pub fn get_router(state: AppState) -> Router {
-    Router::new()
+pub async fn get_router(config: AppConfig) -> anyhow::Result<Router> {
+    let state = AppState::new(config);
+    notif::setup_pg_listener(state.clone()).await?;
+    let app = Router::new()
         .route("/events", get(sse_handler))
         .layer(from_fn_with_state(state.clone(), verify_token::<AppState>))
         .route("/", get(index_handler))
-        .with_state(state.clone())
+        .with_state(state.clone());
+    Ok(app)
 }
 
 async fn index_handler() -> impl IntoResponse {
