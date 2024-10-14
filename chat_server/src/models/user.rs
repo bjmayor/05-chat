@@ -68,7 +68,7 @@ impl AppState {
         };
 
         let password_hash = hash_password(&input.password)?;
-        let user: User = sqlx::query_as(
+        let mut user: User = sqlx::query_as(
             r#"
 			INSERT INTO users (ws_id,email, fullname, password_hash) VALUES ($1, $2, $3,$4) RETURNING id,ws_id, email, fullname, created_at
 			"#,
@@ -79,6 +79,7 @@ impl AppState {
         .bind(password_hash)
         .fetch_one(&self.pool)
         .await?;
+        user.ws_name = ws.name.clone();
         if ws.owner_id == 0 {
             self.update_workspace_owner(ws.id as _, user.id as u64)
                 .await?;
@@ -101,6 +102,10 @@ impl AppState {
                 let is_valid =
                     verify_password(&input.password, &password_hash.unwrap_or_default())?;
                 if is_valid {
+                    let ws = self.find_workspace_by_id(user.ws_id as u64).await?;
+                    if let Some(ws) = ws {
+                        user.ws_name = ws.name;
+                    }
                     Ok(Some(user))
                 } else {
                     Ok(None)
